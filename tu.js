@@ -4,7 +4,7 @@
 var net = require('net');
 
 var PORT = 8052;
-var startNodes = ['192.168.1.6', '192.168.1.24', '192.168.1.100'];
+var startNodes = ['10.96.70.88', '10.96.70.158', '10.96.70.146'];
 var nodes = [];
 var newNodes = [];
 
@@ -71,11 +71,14 @@ Array.prototype.diff = function(a) {
 //server
 var server = net.createServer();
 server.on('connection', function (socket) {
-  console.log('Connected: ' + socket.remoteAddress + ':' + socket.remotePort);
+
+  var comps = socket.remoteAddress.split('.');
+  var remoteIp = comps.reverse().join('.')
+  console.log('Connected: ' + remoteIp + ':' + socket.remotePort);
   socket.on('data', function(data) {
     console.log('got data: ' + data);
-    if (nodes.indexOf(socket.remoteAddress) == -1) {
-      nodes.push(socket.remoteAddress);
+    if (nodes.indexOf(remoteIp) == -1) {
+      nodes.push(remoteIp);
     }
     console.log('responding with nodes: ' + nodes)
     socket.write(JSON.stringify(nodes));
